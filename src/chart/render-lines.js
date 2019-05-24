@@ -63,33 +63,33 @@ function renderLines(config = {}) {
     })
 
   // Animate the existing links to the parent's new position
-  // link
-  //   .exit()
-  //   .transition()
-  //   .duration(animationDuration)
-  //   // .attr('d', d => {
-  //   //   const linePoints = [
-  //   //     {
-  //   //       x: config.callerNode.x + parseInt(nodeWidth / 2),
-  //   //       y: config.callerNode.y + nodeHeight + 2
-  //   //     },
-  //   //     {
-  //   //       x: config.callerNode.x + parseInt(nodeWidth / 2),
-  //   //       y: config.callerNode.y + nodeHeight + 2
-  //   //     },
-  //   //     {
-  //   //       x: config.callerNode.x + parseInt(nodeWidth / 2),
-  //   //       y: config.callerNode.y + nodeHeight + 2
-  //   //     },
-  //   //     {
-  //   //       x: config.callerNode.x + parseInt(nodeWidth / 2),
-  //   //       y: config.callerNode.y + nodeHeight + 2
-  //   //     }
-  //   //   ]
+  link
+    .exit()
+    .transition()
+    .duration(animationDuration)
+    // .attr('d', d => {
+    //   const linePoints = [
+    //     {
+    //       x: config.callerNode.x + parseInt(nodeWidth / 2),
+    //       y: config.callerNode.y + nodeHeight + 2
+    //     },
+    //     {
+    //       x: config.callerNode.x + parseInt(nodeWidth / 2),
+    //       y: config.callerNode.y + nodeHeight + 2
+    //     },
+    //     {
+    //       x: config.callerNode.x + parseInt(nodeWidth / 2),
+    //       y: config.callerNode.y + nodeHeight + 2
+    //     },
+    //     {
+    //       x: config.callerNode.x + parseInt(nodeWidth / 2),
+    //       y: config.callerNode.y + nodeHeight + 2
+    //     }
+    //   ]
 
-  //   //   return angle(linePoints)
-  //   // })
-  //   .each('end', () => {
-  //     config.callerNode = null
-  //   })
+    //   return angle(linePoints)
+    // })
+    .each('end', () => {
+      config.callerNode = null
+    })
 }

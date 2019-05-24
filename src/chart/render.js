@@ -37,20 +37,22 @@ function render(config) {
   } = config
 
   // Compute the new tree layout.
-  const nodes = tree.nodes(treeData).reverse()
-  // const maxDepth = getMaxDepth(treeData);
-  // const nodes = tree.nodes(expand(treeData, maxDepth)).reverse()
+  //const nodes = tree.nodes(treeData).reverse()
+  const maxDepth = getMaxDepth(treeData);
+  const nodes = tree.nodes(expand(treeData, maxDepth)).reverse()
 
   // Normalize for fixed-depth.
   nodes.forEach(function(d) {
     d.y = d.depth * lineDepthY;
   })
 
-  const links = tree.links(nodes)
-  //const links = filter(tree.links(nodes), link => !!link.target.id);
+  const links = filter(tree.links(nodes), link => !!link.target.id);
 
   config.links = links
   config.nodes = nodes
+
+  // Render sections
+  renderSections(config)
 
   // Render tiles
   renderTiles(config)
@@ -58,14 +60,46 @@ function render(config) {
   // Render lines connecting nodes
   renderLines(config)
 
-  // Render sections
-  renderSections(config)
-
   // Stash the old positions for transition.
   // nodes.forEach(function(d) {
   //   d.x0 = d.x
   //   d.y0 = d.y
   // })
+}
+
+function getMaxDepth (treeData) {
+  return _depth(treeData, 0);
+
+  function _depth (d, depth) {
+    const children = d.children||d._children;
+
+    d.depth = depth;
+
+    if (children) {
+      return max(map(children, child => _depth(child, depth+1)));
+    } else {
+      return depth;
+    }
+  }
+}
+
+function expand(d, maxDepth) {
+  const children = d.children||d._children;
+
+  if (d._children) {        
+    d.children = d._children;
+    d._children = null;       
+  }
+
+  if (!children && d.depth < maxDepth) {
+    d.children = [{}];
+  }
+
+  if(children) {
+    children.forEach(child => expand(child, maxDepth));
+  }
+
+  return d;
 }
 
 function getDepartmentClass(d) {
