@@ -6,6 +6,8 @@ const map = require('lodash/map');
 const min = require('lodash/min');
 const max = require('lodash/max');
 
+const SECTION_NODE_CLASS = 'section-node';
+
 module.exports = renderSections;
 
 function renderSections(config={}) {
@@ -29,50 +31,38 @@ function renderSections(config={}) {
     nameColor
   } = config;
 
-  console.log(nodes);
-
   // Select all the sections to render the area
   const area = svg
-    .selectAll('path.section')
+    .selectAll(`rect.${SECTION_NODE_CLASS}`)
     .data(values(groupBy(filter(nodes, node => node.id), 'sectionId')))
-
-  // Define the angled line function
-  const angle = d3.svg
-    .line()
-    .x(d => d.x)
-    .y(d => d.y)
-    .interpolate('linear')
 
    // Enter any new links at the parent's previous position.
    area
     .enter()
-    .insert('path', 'g')
-    .attr('class', 'section')
-    .attr('fill', 'none')
-    .attr('stroke', borderColor)
-    .attr('stroke-opacity', 0.5)
-    .attr('stroke-width', 1.25)
+    .insert('rect', 'g')
+    .attr('class', SECTION_NODE_CLASS)
+    .attr('id', d => d[0]['sectionId'])
+
+  // Draw Section Area
+  area
+    .attr('width', d => {
+      const {xMax, xMin} = _sectionCoordinateHelper(d);
+      return xMax-xMin+nodeWidth+40;
+    })
+    .attr('height', d => {
+      const {yMax, yMin} = _sectionCoordinateHelper(d);
+      return yMax-yMin+nodeHeight+40;
+    })
+    .attr('fill', '#E4ECFD');
 
   // Transition links to their new position.
   area
     .transition()
     .duration(animationDuration)
-    .attr('d', d => {
-      
-      const xs = map(d, d => d.x);
-      const ys = map(d, d => d.y);
-      const xMax = max(xs);
-      const xMin = min(xs);
-      const yMax = max(ys);
-      const yMin = min(ys);
+    .attr('transform', d => {
+      const {xMin, yMin} = _sectionCoordinateHelper(d);
 
-      return angle([
-        {x: xMax+nodeWidth+20, y: yMax+nodeHeight+20},
-        {x: xMax+nodeWidth+20, y: yMin-20},
-        {x: xMin-20, y: yMin-20},
-        {x: xMin-20, y: yMax+nodeHeight+20},
-        {x: xMax+nodeWidth+20, y: yMax+nodeHeight+20}
-      ])
+      return `translate(${xMin-20}, ${yMin-20})`;
     })
 
   // Animate the existing links to the parent's new position
@@ -105,4 +95,15 @@ function renderSections(config={}) {
     .each('end', () => {
       config.callerNode = null
     })
+
+    function _sectionCoordinateHelper(d) {
+      const xs = map(d, d => d.x);
+      const ys = map(d, d => d.y);
+      const xMax = max(xs);
+      const xMin = min(xs);
+      const yMax = max(ys);
+      const yMin = min(ys);
+
+      return {xMax, xMin, yMax, yMin};
+    }
 }

@@ -31,7 +31,7 @@ function renderLines(config = {}) {
     .insert('path', 'g')
     .attr('class', 'link')
     .attr('fill', 'none')
-    .attr('stroke', borderColor)
+    .attr('stroke', '#03A678')
     .attr('stroke-opacity', 0.5)
     .attr('stroke-width', 1.25)
 
