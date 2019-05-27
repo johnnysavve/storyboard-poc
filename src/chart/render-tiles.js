@@ -1,3 +1,4 @@
+const d3 = require('d3')
 const onClick = require('./on-click')
 const { wrapText, helpers } = require('../utils')
 
@@ -35,6 +36,29 @@ function renderTiles(config = {}) {
   .selectAll('g.' + CHART_NODE_CLASS)
   .data(nodes.filter(d => d.id), d => d.id);
 
+  const dispatch = d3.dispatch('drag:start', 'drag:end');
+
+  const drag = d3.behavior.drag()
+    .origin(d => {
+      return d;
+    })
+    .on('dragstart', function (d) {
+      d3.event.sourceEvent.stopPropagation();
+
+      d3.select(this).select(`.${PERSON_NAME_CLASS}`).text('dragging')
+    })
+    .on('drag', function (d) {
+      const tile = d3.select(this);
+
+      tile.attr('transform', `translate(${d3.event.x}, ${d3.event.y})`)
+      
+    })
+    .on('dragend', function (d) {
+      const tile = d3.select(this);
+      tile.attr('transform', `translate(${d.x}, ${d.y})`)
+      tile.select(`.${PERSON_NAME_CLASS}`).text(d.person.id)
+    });
+
   // Enter any new nodes at the parent's previous position.
   const nodeEnter = node
     .enter()
@@ -42,7 +66,7 @@ function renderTiles(config = {}) {
     .attr('class', CHART_NODE_CLASS)
     //.attr('transform', `translate(${parentNode.x0}, ${parentNode.y0})`)
     .attr('id', d => d.id)
-    //.on('click', onClick(config));
+    .call(drag);
 
   // Person Card Shadow
   nodeEnter

@@ -146,18 +146,6 @@
             "department": "Communications"
           },
           "hasChild": false
-        },
-        {
-          "id": 245116,
-          "sectionId": 3,
-          "person": {
-            "id": 245116,
-            "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/_dwite_/128.jpg",
-            "name": "Tara Gerhold",
-            "title": "International Implementation Executive",
-            "department": "Communications"
-          },
-          "hasChild": false
         }
       ]
     },
@@ -171,7 +159,21 @@
         "title": "Global Branding Supervisor",
         "department": "Engineering"
       },
-      "hasChild": false
+      "children": [
+        {
+          "id": 245116,
+          "sectionId": 4,
+          "person": {
+            "id": 245116,
+            "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/_dwite_/128.jpg",
+            "name": "Tara Gerhold",
+            "title": "International Implementation Executive",
+            "department": "Communications"
+          },
+          "hasChild": false
+        }
+      ],
+      "hasChild": true
     },
     {
       "id": 202592,
