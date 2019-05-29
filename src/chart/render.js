@@ -1,3 +1,4 @@
+const d3 = require('d3')
 const reduce = require('lodash/reduce')
 const map = require('lodash/map');
 const max = require('lodash/max');
@@ -48,9 +49,34 @@ function render(config) {
 
   const links = filter(tree.links(nodes), link => !!link.target.id);
 
+  const dispatch = d3.dispatch('tiledragstart', 'tiledragend');
+
+  dispatch.on('tiledragstart', function (d) {
+    d.person.id = 'dragging start';
+    console.log('drag start', d)
+  })
+  dispatch.on('tiledragend', function (d) {
+    d.person.id = 'dragging end';
+    
+    console.log('drag end', d)
+  })
+
   config.links = links
   config.nodes = nodes
+  config.dispatch = dispatch
 
+  console.log(links, nodes);
+
+  startRender(config)
+
+  // Stash the old positions for transition.
+  // nodes.forEach(function(d) {
+  //   d.x0 = d.x
+  //   d.y0 = d.y
+  // })
+}
+
+function startRender (config) {
   // Render sections
   renderSections(config)
 
@@ -59,12 +85,6 @@ function render(config) {
 
   // Render lines connecting nodes
   renderLines(config)
-
-  // Stash the old positions for transition.
-  // nodes.forEach(function(d) {
-  //   d.x0 = d.x
-  //   d.y0 = d.y
-  // })
 }
 
 function getMaxDepth (treeData) {
