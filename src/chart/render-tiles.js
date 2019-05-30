@@ -59,14 +59,12 @@ function renderTiles(config = {}) {
     .on('drag', function (d) {
       if (isDraggable(d)) {
         const tile = d3.select(this);
-        console.log(d3.event, 'drag')
         tile.attr('transform', `translate(${d3.event.x}, ${d3.event.y})`)
       }
     })
     .on('dragend', function (d) {
       if (isDraggable(d)) {
         dispatch['tiledragend'](d)
-        console.log(d3.event, 'dragend')
         const tile = d3.select(this);
         tile.attr('transform', `translate(${d.x}, ${d.y})`)
 
