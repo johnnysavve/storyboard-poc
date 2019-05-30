@@ -1,0 +1,117 @@
+{
+  "blocks": {
+    "/": {
+      "id": 114734,
+      "sectionId": 1,
+      "person": {
+        "id": 114734,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/_victa/128.jpg",
+        "name": "Easton Connelly",
+        "title": "CEO",
+        "department": "",
+        "totalReports": 5
+      }
+    },
+    "/295201": {
+      "id": 295201,
+      "sectionId": 2,
+      "person": {
+        "id": 295201,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/commadelimited/128.jpg",
+        "name": "Ally Borer",
+        "title": "Principal Marketing Analyst",
+        "department": "Marketing",
+        "totalReports": 6
+      }
+    },
+    "/185765": {
+      "id": 185765,
+      "sectionId": 3,
+      "person": {
+        "id": 185765,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/vonachoo/128.jpg",
+        "name": "Wyman Nitzsche",
+        "title": "Lead Communications Liaison",
+        "department": "Communications",
+        "totalReports": 4
+      }
+    },
+    "/93689": {
+      "id": 93689,
+      "sectionId": 4,
+      "person": {
+        "id": 93689,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/mfacchinello/128.jpg",
+        "name": "Ulices Hane",
+        "title": "Global Branding Supervisor",
+        "department": "Engineering"
+      }
+    },
+    "/72210": {
+      "id": 72210,
+      "sectionId": 2,
+      "person": {
+        "id": 72210,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/mkginfo/128.jpg",
+        "name": "Rebekah Herman",
+        "title": "District Brand Coordinator",
+        "department": "Marketing"
+      }
+    },
+    "/231198": {
+      "id": 231198,
+      "sectionId": 3,
+      "person": {
+        "id": 231198,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/woodsman001/128.jpg",
+        "name": "Lonzo Bernier",
+        "title": "Product Communications Manager",
+        "department": "Communications"
+      }
+    },
+    "/245116": {
+      "id": 245116,
+      "sectionId": 4,
+      "person": {
+        "id": 245116,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/_dwite_/128.jpg",
+        "name": "Tara Gerhold",
+        "title": "International Implementation Executive",
+        "department": "Communications"
+      }
+    },
+    "/250132": {
+      "id": 250132,
+      "sectionId": 2,
+      "person": {
+        "id": 250132,
+        "avatar": "https://s3.amazonaws.com/uifaces/faces/twitter/saschadroste/128.jpg",
+        "name": "Jared Kling",
+        "title": "Principal Solutions Producer",
+        "department": "Marketing"
+      }
+    }
+  },
+  "links": [{
+    "source": {"id": 114734},
+    "target": {"id": 295201}
+  }, {
+    "source": {"id": 114734},
+    "target": {"id": 185765}
+  }, {
+    "source": {"id": 114734},
+    "target": {"id": 93689}
+  }, {
+    "source": {"id": 295201},
+    "target": {"id": 72210}
+  }, {
+    "source": {"id": 72210},
+    "target": {"id": 250132}
+  }, {
+    "source": {"id": 185765},
+    "target": {"id": 231198}
+  }, {
+    "source": {"id": 93689},
+    "target": {"id": 245116}
+  }]
+}

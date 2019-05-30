@@ -3,6 +3,7 @@ const reduce = require('lodash/reduce')
 const map = require('lodash/map');
 const max = require('lodash/max');
 const filter = require('lodash/filter');
+const cloneDeep = require('lodash/cloneDeep')
 
 const { wrapText, helpers } = require('../utils')
 const renderLines = require('./render-lines')
@@ -39,6 +40,7 @@ function render(config) {
 
   // Compute the new tree layout.
   //const nodes = tree.nodes(treeData).reverse()
+  const originalTreeData = cloneDeep(treeData)
   const maxDepth = getMaxDepth(treeData);
   const nodes = tree.nodes(expand(treeData, maxDepth)).reverse()
 
@@ -49,23 +51,29 @@ function render(config) {
 
   const links = filter(tree.links(nodes), link => !!link.target.id);
 
-  const dispatch = d3.dispatch('tiledragstart', 'tiledragend');
+  const dispatch = d3.dispatch(
+    'tiledragstart',
+    'tiledragend',
+    'addblock'
+  );
 
   dispatch.on('tiledragstart', function (d) {
     d.person.id = 'dragging start';
     console.log('drag start', d)
   })
+
   dispatch.on('tiledragend', function (d) {
     d.person.id = 'dragging end';
-    
     console.log('drag end', d)
+  })
+
+  dispatch.on('addblock', function (d) {
+    console.log(d, originalTreeData)
   })
 
   config.links = links
   config.nodes = nodes
   config.dispatch = dispatch
-
-  console.log(links, nodes);
 
   startRender(config)
 
