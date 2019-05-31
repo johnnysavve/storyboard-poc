@@ -20,24 +20,29 @@ function renderLines(config = {}) {
   const pathData = links.filter(link => link.source.id);
   
   const newBlockPlaceData = reduce(nodes.filter(d => d.id), (places, d) => {
+    const {parent=d} = d;
+
     if (!d.hasChild) {
       return concat(places, [{
-        x: d.x + parseInt(nodeWidth / 2),
-        y: d.y + nodeHeight + margin.top / 2,
+        x: parseInt(nodeWidth / 2),
+        y: margin.top / 2,
         isAfter: true,
-        id: d.id
+        node: d,
+        placeId: `${d.id}-tail`
       }, {
-        x: d.x + parseInt(nodeWidth / 2),
-        y: d.y - margin.top / 2,
+        x: parseInt(nodeWidth / 2),
+        y: 0 - margin.top / 2,
         isAfter: false,
-        id: d.id
+        node: d,
+        placeId: `${parent.id}-${d.id}`
       }])
     } else {
       return concat(places, [{
-        x: d.x + parseInt(nodeWidth / 2),
-        y: d.y - margin.top / 2,
+        x: parseInt(nodeWidth / 2),
+        y: 0 - margin.top / 2,
         isAfter: false,
-        id: d.id
+        node: d,
+        placeId: `${parent.id}-${d.id}`
       }])
     }
   }, [])
@@ -65,8 +70,6 @@ function renderLines(config = {}) {
     .insert('path', 'g')
     .attr('class', 'link')
     .attr('fill', 'none')
-    .attr('stroke', '#03A678')
-    .attr('stroke-opacity', 0.5)
     .attr('stroke-width', 1.25)
 
   // Transition links to their new position.
@@ -74,8 +77,10 @@ function renderLines(config = {}) {
     .transition()
     .duration(animationDuration)
     .attr('d', d => {
+      const isSameSection = d.source.sectionId === d.target.sectionId;
+      const yAdjust = isSameSection?0:margin.top / 4;
 
-      if (d.source.x === d.target.x) {
+      if (isSameSection) {
         return angle([
           {
             x: d.source.x + parseInt(nodeWidth / 2),
@@ -90,7 +95,7 @@ function renderLines(config = {}) {
         return angle([
           {
             x: d.source.x + parseInt(nodeWidth / 2),
-            y: d.source.y + nodeHeight
+            y: d.source.y + nodeHeight + yAdjust
           },
           {
             x: d.source.x + parseInt(nodeWidth / 2),
@@ -102,10 +107,14 @@ function renderLines(config = {}) {
           },
           {
             x: d.target.x + parseInt(nodeWidth / 2),
-            y: d.target.y
+            y: d.target.y - yAdjust
           }
         ])
       }
+    })
+    .attr('stroke', d => {
+      const isSameSection = d.source.sectionId === d.target.sectionId;
+      return isSameSection?'#03A678':'#800080';
     })
 
   // Animate the existing links to the parent's new position
@@ -143,16 +152,17 @@ function renderLines(config = {}) {
   function renderNewBlockPlaceholder (data) {
     const node = svg
       .selectAll('g.new-node')
-      .data(data)
+      .data(data, d => d.placeId)
 
     const nodeEnter = node
       .enter()
       .insert('g')
       .attr('class', 'new-node')
       .attr('cursor', 'pointer')
+      .attr('id', d => d.placeId)
       .on('click', function(d) {
         d3.event.stopPropagation();
-        dispatch['addblock'](d);
+        dispatch['addblock']({id: d.node.id, isAfter: d.isAfter});
       })
       .on('mouseover', function (d, i) {
         d3.select(this).select('circle').attr('fill-opacity', 1)
@@ -217,7 +227,25 @@ function renderLines(config = {}) {
           x: d.x,
           y: d.y - 5
         }])
-      })  
+      })
+
+    const nodeUpdate = node
+      .transition()
+      .duration(animationDuration)
+      .attr('transform', d => {
+        const {node, isAfter} = d;
+        const x = node.x;
+        const y = isAfter?
+          node.y+nodeHeight:
+          node.y;
+
+        return `translate(${x}, ${y})`;  
+      })
       
+    const nodeExit = node
+      .exit()
+      .transition()
+      .duration(animationDuration)
+      .remove()
   }
 }

@@ -51,7 +51,7 @@ function renderTiles(config = {}) {
         addPlaceholderTile(d);
   
         svg.selectAll('g.' + CHART_NODE_CLASS).sort(function (a, b) {
-          if (a.person.id === d.person.id) return 1;
+          if (a.id === d.id) return 1;
           else return -1;
         })
       }
@@ -134,7 +134,7 @@ function renderTiles(config = {}) {
     .attr('dy', '.3em')
     .style('fill', nameColor)
     .style('font-size', 16)
-    .text(d => d.person.id)
+    .text(d => d.id)
 
     // Transition nodes to their new position.
     const nodeUpdate = node
@@ -207,7 +207,7 @@ function renderTiles(config = {}) {
       .attr('dy', '.3em')
       .style('fill', nameColor)
       .style('font-size', 16)
-      .text(d => d.person.id)
+      .text(d => d.id)
   }
 
   function removePlaceholderTile () {

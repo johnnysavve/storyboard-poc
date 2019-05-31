@@ -35,21 +35,11 @@ function render(config) {
     avatarWidth,
     lineDepthY,
     treeData,
-    sourceNode
+    sourceNode,
+    addBlock
   } = config
 
-  // Compute the new tree layout.
-  //const nodes = tree.nodes(treeData).reverse()
-  const originalTreeData = cloneDeep(treeData)
-  const maxDepth = getMaxDepth(treeData);
-  const nodes = tree.nodes(expand(treeData, maxDepth)).reverse()
-
-  // Normalize for fixed-depth.
-  nodes.forEach(function(d) {
-    d.y = d.depth * lineDepthY;
-  })
-
-  const links = filter(tree.links(nodes), link => !!link.target.id);
+  const {nodes, links} = preprocessData(treeData);
 
   const dispatch = d3.dispatch(
     'tiledragstart',
@@ -58,17 +48,22 @@ function render(config) {
   );
 
   dispatch.on('tiledragstart', function (d) {
-    d.person.id = 'dragging start';
-    console.log('drag start', d)
+    d.id = 'dragging start';
   })
 
   dispatch.on('tiledragend', function (d) {
-    d.person.id = 'dragging end';
-    console.log('drag end', d)
+    d.id = 'dragging end';
   })
 
   dispatch.on('addblock', function (d) {
-    console.log(d, originalTreeData)
+    const data = addBlock(d);
+
+    const {nodes, links} = preprocessData(data);
+
+    config.links = links
+    config.nodes = nodes
+
+    startRender(config)
   })
 
   config.links = links
@@ -82,59 +77,75 @@ function render(config) {
   //   d.x0 = d.x
   //   d.y0 = d.y
   // })
-}
 
-function startRender (config) {
-  // Render sections
-  renderSections(config)
-
-  // Render tiles
-  renderTiles(config)
-
-  // Render lines connecting nodes
-  renderLines(config)
-}
-
-function getMaxDepth (treeData) {
-  return _depth(treeData, 0);
-
-  function _depth (d, depth) {
-    const children = d.children||d._children;
-
-    d.depth = depth;
-
-    if (children) {
-      return max(map(children, child => _depth(child, depth+1)));
-    } else {
-      return depth;
+  function preprocessData (treeData) {
+  // Compute the new tree layout.
+    //const nodes = tree.nodes(treeData).reverse()
+    const maxDepth = getMaxDepth(treeData);
+    const nodes = tree.nodes(expand(treeData, maxDepth)).reverse()
+  
+    // Normalize for fixed-depth.
+    nodes.forEach(function(d) {
+      d.y = d.depth * lineDepthY;
+    })
+  
+    const links = filter(tree.links(nodes), link => !!link.target.id);
+  
+    return {nodes, links};
+  }
+  
+  function startRender (config) {
+    // Render sections
+    renderSections(config)
+  
+    // Render tiles
+    renderTiles(config)
+  
+    // Render lines connecting nodes
+    renderLines(config)
+  }
+  
+  function getMaxDepth (treeData) {
+    return _depth(treeData, 0);
+  
+    function _depth (d, depth) {
+      const children = d.children||d._children;
+  
+      d.depth = depth;
+  
+      if (children) {
+        return max(map(children, child => _depth(child, depth+1)));
+      } else {
+        return depth;
+      }
     }
   }
-}
-
-function expand(d, maxDepth) {
-  const children = d.children||d._children;
-
-  if (d._children) {        
-    d.children = d._children;
-    d._children = null;       
+  
+  function expand(d, maxDepth) {
+    const children = d.children||d._children;
+  
+    if (d._children) {        
+      d.children = d._children;
+      d._children = null;       
+    }
+  
+    if (!children && d.depth < maxDepth) {
+      d.children = [{}];
+    }
+  
+    if(children) {
+      children.forEach(child => expand(child, maxDepth));
+    }
+  
+    return d;
   }
-
-  if (!children && d.depth < maxDepth) {
-    d.children = [{}];
+  
+  function getDepartmentClass(d) {
+    const { person } = d
+    const deptClass = person.department ? person.department.toLowerCase() : ''
+  
+    return [PERSON_DEPARTMENT_CLASS, deptClass].join(' ')
   }
-
-  if(children) {
-    children.forEach(child => expand(child, maxDepth));
-  }
-
-  return d;
-}
-
-function getDepartmentClass(d) {
-  const { person } = d
-  const deptClass = person.department ? person.department.toLowerCase() : ''
-
-  return [PERSON_DEPARTMENT_CLASS, deptClass].join(' ')
 }
 
 module.exports = render
