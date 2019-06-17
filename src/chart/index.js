@@ -15,7 +15,8 @@ function init(options) {
   const config = {
     ...defaultConfig,
     ...options,
-    treeData: options.data
+    treeData: options.data,
+    scale: 1
   }
 
   if (!config.id) {
@@ -50,6 +51,8 @@ function init(options) {
 
   const elemWidth = elem.offsetWidth
   const elemHeight = elem.offsetHeight
+
+  console.log(elemHeight, elemWidth);
 
   // Setup the d3 tree layout
   config.tree = d3.layout
@@ -107,16 +110,16 @@ function init(options) {
     .duration(50)
     .on('zoom', renderUpdate(config))
 
-  // Attach zoom behavior to the svg root
-  svgroot.call(zoom)
-
   // Define the point of origin for zoom transformations
   zoom.translate([
     parseInt(
       childrenWidth + (elemWidth - childrenWidth * 2) / 2 - margin.left / 2
     ),
     20
-  ])
+  ])  
+
+  // Attach zoom behavior to the svg root
+  svgroot.call(zoom)
 
   // Add listener for when the browser or parent node resizes
   const resize = () => {

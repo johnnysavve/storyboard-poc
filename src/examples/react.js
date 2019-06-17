@@ -4,7 +4,7 @@ const OrgChart = require('../react/org-chart')
 const fakeData = require('../utils/fake-data')
 const storyboardData = require('../utils/storyboard.json')
 const buildTreeData = require('../utils/buildTreeData')
-
+const buildSectionTree = require('../utils/buildSectionTree')
 
 const root = document.getElementById('root')
 const tree = buildTreeData(storyboardData)
